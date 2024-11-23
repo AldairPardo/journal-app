@@ -8,25 +8,55 @@ import {
 } from "@mui/material";
 import { AuthLayout } from "../layout/AuthLayout";
 import { useForm } from "../../hooks";
+import { useState } from "react";
 
 const formData = {
-    displayName: "Aldair Pardo",
-    email: "aldair@mail.com",
-    password: "123456",
+    displayName: "",
+    email: "",
+    password: "",
 };
+
+const formValidations = {
+    email: [ (value) => value.includes("@"), 'El correo debe tener un @' ],
+    password: [ (value) => value.length > 5, 'La contraseña debe tener al menos 6 caracteres' ],
+    displayName: [ (value) => value.trim().length > 0, 'El nombre es requerido' ],
+};
+
 export const RegisterPage = () => {
 
-    const { displayName, email, password, onInputChange } = useForm();
+    const [formSubmittes, setFormSubmittes] = useState(false);
+
+    const {
+        displayName,
+        email,
+        password,
+        onInputChange,
+        formState,
+        isFormValid,
+        emailValid,
+        passwordValid,
+        displayNameValid,
+    } = useForm(formData, formValidations);
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        setFormSubmittes(true);
+    };
 
     return (
         <AuthLayout title="login">
-            <form>
+            <form onSubmit={onSubmit}>
                 <Grid container spacing={2}>
                     <TextField
                         label="Nombre Completo"
-                        type="email"
+                        type="text"
                         placeholder="Nombre Completo"
                         fullWidth
+                        name="displayName"
+                        value={displayName}
+                        onChange={onInputChange}
+                        error={!!displayNameValid && formSubmittes}
+                        helperText={displayNameValid}
                     />
 
                     <TextField
@@ -34,6 +64,11 @@ export const RegisterPage = () => {
                         type="email"
                         placeholder="correo@google.com"
                         fullWidth
+                        name="email"
+                        value={email}
+                        onChange={onInputChange}
+                        error={!!emailValid && formSubmittes}
+                        helperText={emailValid}
                     />
 
                     <TextField
@@ -41,11 +76,16 @@ export const RegisterPage = () => {
                         type="password"
                         placeholder="password"
                         fullWidth
+                        name="password"
+                        value={password}
+                        onChange={onInputChange}
+                        error={!!passwordValid && formSubmittes}
+                        helperText={passwordValid}
                     />
 
                     <Grid container size={12}>
                         <Grid size={{ xs: 12 }}>
-                            <Button fullWidth variant="contained">
+                            <Button type="submit" fullWidth variant="contained">
                                 Crear cuenta
                             </Button>
                         </Grid>
