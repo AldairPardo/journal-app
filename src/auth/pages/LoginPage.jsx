@@ -8,21 +8,42 @@ import {
     Typography,
 } from "@mui/material";
 import { AuthLayout } from "../layout/AuthLayout";
+import { useForm } from "../../hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { checkingAuthentication, startGoogleSignIn } from "../../store/auth";
+import { useMemo } from "react";
 
 export const LoginPage = () => {
+    const { status } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+    const { email, password, onInputChange } = useForm({
+        email: "aldair@mail.com",
+        password: "12345678",
+    });
+
+    const isAuthenticating = useMemo(() => status === "checking", [status]);
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        dispatch(checkingAuthentication());
+    };
+
+    const onGoogleSignIn = () => {
+        console.log("Google Sign In");
+        dispatch(startGoogleSignIn());
+    };
     return (
         <AuthLayout title="login">
-            <form>
+            <form onSubmit={onSubmit}>
                 <Grid container spacing={2}>
                     <TextField
                         label="Correo"
                         type="email"
                         placeholder="correo@google.com"
                         fullWidth
-                        // id="email"
-                        // name="email"
-                        // variant="outlined"
-                        // autoComplete="off"
+                        name="email"
+                        value={email}
+                        onChange={onInputChange}
                     />
 
                     <TextField
@@ -30,21 +51,30 @@ export const LoginPage = () => {
                         type="password"
                         placeholder="password"
                         fullWidth
-                        // id="password"
-                        // name="password"
-                        // variant="outlined"
-                        // autoComplete="off"
+                        name="password"
+                        value={password}
+                        onChange={onInputChange}
                     />
 
                     <Grid container size={12} spacing={2}>
                         <Grid size={{ xs: 12, md: 6 }}>
-                            <Button fullWidth variant="contained">
+                            <Button
+                                disabled={isAuthenticating}
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                            >
                                 Login
                             </Button>
                         </Grid>
 
                         <Grid size={{ xs: 12, md: 6 }}>
-                            <Button fullWidth variant="contained">
+                            <Button
+                                disabled={isAuthenticating}
+                                variant="contained"
+                                fullWidth
+                                onClick={onGoogleSignIn}
+                            >
                                 <Google />
                                 <Typography marginLeft={1}>Google</Typography>
                             </Button>
