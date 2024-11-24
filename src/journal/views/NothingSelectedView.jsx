@@ -4,6 +4,7 @@ import { Grid2 as Grid, Typography } from "@mui/material";
 export const NothingSelectedView = () => {
     return (
         <Grid
+            className="animate__animated animate__fadeIn animate__faster"
             container
             spacing={0}
             direction="column"
@@ -19,7 +20,7 @@ export const NothingSelectedView = () => {
                 <StarOutline sx={{ fontSize: 100, color: "white" }} />
             </Grid>
             <Grid xs={12}>
-                <Typography color='white' variant='h5'>
+                <Typography color="white" variant="h5">
                     Selecciona o crea una entrada
                 </Typography>
             </Grid>
