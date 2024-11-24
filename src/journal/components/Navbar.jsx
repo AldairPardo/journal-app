@@ -7,13 +7,21 @@ import {
     Typography,
 } from "@mui/material";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { startLogout } from "../../store/auth";
 
 export const Navbar = ({ drawerWidth }) => {
+    const dispatch = useDispatch();
+
+    const onLogout = () => {
+        dispatch(startLogout());
+    };
+
     return (
         <AppBar
             position="fixed"
             sx={{
-                width:{ sm: `calc(100% - ${ drawerWidth }px)`},
+                width: { sm: `calc(100% - ${drawerWidth}px)` },
                 ml: { sm: `${drawerWidth}px` },
             }}
         >
@@ -39,7 +47,7 @@ export const Navbar = ({ drawerWidth }) => {
                         flex: 1,
                     }}
                 >
-                    <IconButton color="error">
+                    <IconButton color="error" onClick={onLogout}>
                         <LogoutOutlined />
                     </IconButton>
                 </Grid>

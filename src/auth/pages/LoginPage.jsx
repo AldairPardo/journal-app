@@ -1,6 +1,7 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Google } from "@mui/icons-material";
 import {
+    Alert,
     Button,
     Grid2 as Grid,
     Link,
@@ -10,22 +11,26 @@ import {
 import { AuthLayout } from "../layout/AuthLayout";
 import { useForm } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { checkingAuthentication, startGoogleSignIn } from "../../store/auth";
+import {
+    checkingAuthentication,
+    startGoogleSignIn,
+    startLoginWithEmailAndPassword,
+} from "../../store/auth";
 import { useMemo } from "react";
 
 export const LoginPage = () => {
-    const { status } = useSelector((state) => state.auth);
+    const { status, errorMessage } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const { email, password, onInputChange } = useForm({
-        email: "aldair@mail.com",
-        password: "12345678",
+        email: "",
+        password: "",
     });
 
     const isAuthenticating = useMemo(() => status === "checking", [status]);
 
     const onSubmit = (e) => {
         e.preventDefault();
-        dispatch(checkingAuthentication());
+        dispatch(startLoginWithEmailAndPassword({ email, password }));
     };
 
     const onGoogleSignIn = () => {
@@ -55,6 +60,21 @@ export const LoginPage = () => {
                         value={password}
                         onChange={onInputChange}
                     />
+
+                    <Grid
+                        container
+                        size={12}
+                        display={!!errorMessage ? "" : "none"}
+                        sx={{ mt: 1 }}
+                    >
+                        <Grid
+                            size={{
+                                xs: 12,
+                            }}
+                        >
+                            <Alert severity="error">{errorMessage}</Alert>
+                        </Grid>
+                    </Grid>
 
                     <Grid container size={12} spacing={2}>
                         <Grid size={{ xs: 12, md: 6 }}>
